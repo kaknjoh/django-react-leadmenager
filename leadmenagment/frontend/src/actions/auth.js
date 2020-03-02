@@ -65,6 +65,29 @@ export const logoutUser = () => (dispatch, getState) => {
     });
 };
 
+// REGISTER USER
+export const registerUser = ({ username, password, email }) => dispatch => {
+  //Headers
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  };
+
+  // If header, add to headers config
+
+  const body = JSON.stringify({ username, password, email });
+  axios
+    .post("api/auth/register", body, config)
+    .then(res => {
+      dispatch({ type: REGISTER_SUCCESS, payloads: res.data });
+    })
+    .catch(err => {
+      dispatch(returnErrors(err.response.data, err.response.status));
+      dispatch({ type: REGISTER_FAIL });
+    });
+};
+
 // SETUP CONFIG TOKEN - HELPER FUNCTION
 export const tokenConfig = getState => {
   // GET TOKENEN FROM THE STATE
@@ -83,27 +106,4 @@ export const tokenConfig = getState => {
     config.headers["Authorization"] = `Token ${token}`;
   }
   return config;
-};
-
-// REGISTER USER
-export const registerUser = ({ username, password, email }) => dispatch => {
-  //Headers
-  const config = {
-    headers: {
-      "Content-Type": "application/json"
-    }
-  };
-
-  // If header, add to headers config
-
-  const body = JSON.stringify({ username, email, password });
-  axios
-    .post("api/auth/register", body, config)
-    .then(res => {
-      dispatch({ type: REGISTER_SUCCESS, payloads: res.data });
-    })
-    .catch(err => {
-      dispatch(returnErrors(err.response.data, err.response.status));
-      dispatch({ type: REGISTER_FAIL });
-    });
 };
